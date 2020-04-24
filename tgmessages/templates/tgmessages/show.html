@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+.sndmsgtobot input[type="tgmessage"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+{% if request.user.is_authenticated %}
+    <p class="lead">Ваши сообщения:</p>
+    <table>
+        {% if tgmessages|length > 0 %}
+        <thead>
+            <th width="33%"><p class="lead">ID пользователя</p></th>
+            <th width="33%"><p class="lead">Текст сообщения</p></th>
+            <th width="33%"><p class="lead">Дата отправления</p></th>
+        </thead>
+        {% for each in tgmessages %}
+        <tbody>
+            {% for every in each %}
+                <td width="33%"><p class="lead">{{every}}</p></td>
+            {% endfor %}
+        </tbody>
+        {% endfor %}
+        {% else %}
+            <p class="lead">У вас нет отправленных сообщений</p>
+        {% endif %}
+    </table>
+{% endif %}
+</div>
+
+{% endblock content %}

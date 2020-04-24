@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+.sndmsgtobot input[type="tgmessage"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+<script>
+function loadD(){
+var settings = {
+  "url": "/tg_messages/api/sendmessage/",
+  "method": "POST",
+  "timeout": 0,
+  "headers": {
+    "Authorization": "Token {{request.user.token}}"
+  },
+  "processData": false,
+  "mimeType": "multipart/form-data",
+  "contentType": 'application/json',
+  "data": JSON.stringify({'body': document.getElementById("messageBody").value})
+};
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+});
+document.getElementById("label").innerHTML = "Вы отправили сообщение боту!"
+}
+</script>
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+{% if request.user.is_authenticated %}
+    {% if request.user.token == None or request.user.token == '' %}
+        <form action="{% url 'gettoken' %}">
+            <button type="submit" class="display-4">Генерация токена</h1>
+        </form>
+    {% else %}
+        <p class="lead">Ваш токен: "{{request.user.token}}"</p>
+        {% if request.user.chat_id == None or request.user.chat_id == '' %}
+            <p class="lead">Отлично, теперь авторизуйся в Telegram: отправь свой токен боту <a href="https://t.me/thefactory_test_sultan_bot">TheFactory Test Bot</a></p>
+        {% else %}
+                {% csrf_token %}
+                <form class = "sndmsgtobot">
+                <input type="hidden" id="tokenField" value="{{request.user.token}}" />
+                <input type="tgmessage" name="messageBody" id="messageBody" class="form-control" placeholder="Input text" required autofocus>
+                <button class="btn btn-lg btn-primary btn-block" type="button" onclick="loadD()">Change Content</button>
+                <br>
+                <p id="label"></p>
+                </form>
+        {% endif %}
+    {% endif %}
+{% endif %}
+</div>
+
+{% endblock content %}
+<!--<form class="sndmsgtobot" method="post" action="{% url 'sendmsg' %}">-->
